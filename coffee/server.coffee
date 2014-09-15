@@ -6,7 +6,7 @@ server.listen 8000, ->
     console.log 'listening'
 
 handler = (req,res) ->
-    fs.readFile __dirname + '/index.html', (err,data)->
+    fs.readFile __dirname + '../index.html', (err,data)->
         if err
             console.log 'error'
             res.writeHead 500
@@ -18,7 +18,7 @@ handler = (req,res) ->
 
 io.on 'connection', (socket) ->
     ### this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database###
-    fs.readFile __dirname + 'js/deviceInfo.js' , (err,data)->
+    fs.readFile __dirname + '../js/deviceInfo.js' , (err,data)->
         if err 
             console.log 'error getting device info'
             socket.emit 'error', {errorCode : '500' , errorMessage:'Failed to open Device info'}

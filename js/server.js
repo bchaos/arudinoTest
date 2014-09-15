@@ -15,7 +15,7 @@
   });
 
   handler = function(req, res) {
-    return fs.readFile(__dirname + '/index.html', function(err, data) {
+    return fs.readFile(__dirname + '../index.html', function(err, data) {
       if (err) {
         console.log('error');
         res.writeHead(500);
@@ -31,7 +31,7 @@
   io.on('connection', function(socket) {
     /* this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database*/
 
-    return fs.readFile(__dirname + 'js/deviceInfo.js', function(err, data) {
+    return fs.readFile(__dirname + '../js/deviceInfo.js', function(err, data) {
       if (err) {
         console.log('error getting device info');
         socket.emit('error', {
