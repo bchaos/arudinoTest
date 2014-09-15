@@ -2,7 +2,8 @@ server = require('http').createServer(handler)
 io = require('socket.io')(server)
 fs= require('fs')
 __dirname=''
-server.listen 80
+server.listen 8000, -> 
+    console.log 'listening'
 
 handler = (req,res) ->
     fs.readFile __dirname + '/index.html', (err,data)->

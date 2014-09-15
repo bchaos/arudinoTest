@@ -10,7 +10,9 @@
 
   __dirname = '';
 
-  server.listen(80);
+  server.listen(8000, function() {
+    return console.log('listening');
+  });
 
   handler = function(req, res) {
     return fs.readFile(__dirname + '/index.html', function(err, data) {
