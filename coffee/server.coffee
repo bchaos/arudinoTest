@@ -1,11 +1,13 @@
-server = require('http').createServer(handler)
+app =require('express')();
+server = require('http').createServer(app)
 io = require('socket.io')(server)
 fs= require('fs')
 __dirname=''
 server.listen 8000, -> 
     console.log 'listening'
 
-handler = (req,res) ->
+app.get '/', (req, res)->
+    console.log 'recieved request'
     fs.readFile __dirname + '../index.html', (err,data)->
         if err
             console.log 'error'
