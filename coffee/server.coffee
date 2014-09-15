@@ -13,7 +13,7 @@ handler = (req,res) ->
             res.writeHead 200
             res.end data
 
-io.on 'connection', socket ->
+io.on 'connection', (socket) ->
     ### this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database###
     fs.readFile __dirname + 'deviceInfo/deviceInfo.js' , (err,data)->
         if err 

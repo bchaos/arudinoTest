@@ -24,7 +24,7 @@
     });
   };
 
-  io.on('connection', socket(function() {
+  io.on('connection', function(socket) {
     /* this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database*/
 
     return fs.readFile(__dirname + 'deviceInfo/deviceInfo.js', function(err, data) {
@@ -43,6 +43,6 @@
 
       });
     });
-  }));
+  });
 
 }).call(this);
