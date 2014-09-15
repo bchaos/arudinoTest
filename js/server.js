@@ -15,15 +15,13 @@
   handler = function(req, res) {
     return fs.readFile(__dirname + '/index.html', function(err, data) {
       if (err) {
+        console.log('error');
         res.writeHead(500);
-            console.log('error');
         return res.end('error loading index.html');
-         
       } else {
+        console.log('success');
         res.writeHead(200);
-             console.log('success');
         return res.end(data);
-        
       }
     });
   };
@@ -31,18 +29,18 @@
   io.on('connection', function(socket) {
     /* this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database*/
 
-    return fs.readFile(__dirname + '/js/deviceInfo.js', function(err, data) {
+    return fs.readFile(__dirname + 'js/deviceInfo.js', function(err, data) {
       if (err) {
+        console.log('error getting device info');
         socket.emit('error', {
           errorCode: '500',
           errorMessage: 'Failed to open Device info'
         });
-           console.log('error reading device  info');
       } else {
+        console.log('sent device info');
         /* one  option is that since we have the device info we could make a looping request to the ddevice to get its current status*/
 
         socket.emit('init', data);
-            console.log('sent device  info');
       }
       return socket.on('updateComponent', function(data) {
         /* here is where you pu in all the magic to update the network device*/
