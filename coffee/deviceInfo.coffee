@@ -1,5 +1,5 @@
-root = exports ? this
-root.getDeviceInfo =  ->
+window  = exports ? this
+window .getDeviceInfo =  ->
         [{ 
                             name: 'First Arduino board '
                             image: 'http://www.fillmurray.com/g/100/102'

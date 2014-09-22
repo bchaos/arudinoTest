@@ -1,5 +1,5 @@
-root = exports ? this
-root.getIoInfo = ->
+window  = exports ? this
+window .getIoInfo = ->
        [  { 
                             name: 'io1.1'
                             pin:'1'

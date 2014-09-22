@@ -1,14 +1,20 @@
 ### debugmode allows to acccess a local component list with out the need for server access ###
-debugMode=true
+debugMode=false
 
 ### setting up the name of the Contorller###
-app  = angular.module 'DeviceManager', ['ngAnimate', 'ngRoute','ngResource','ngSanitize',  'ionic'],
+app  = angular.module 'DeviceManager', ['ngAnimate', 'ngRoute','ngResource','ngSanitize',  'ionic' ,  'DeviceManager.directives',    'DeviceManager.services','DeviceManager.servicesa','DeviceManager.controllers'],
     ($routeProvider, $locationProvider)->
         $routeProvider.when '/pin', {
             templateUrl: 'views/Pin.html'
         }
         $routeProvider.when '/device', {
             templateUrl: 'views/Device.html'
+        }
+    
+        $routeProvider.when '/deviceChart', {
+            templateUrl: 'views/DeviceChart.html'
+            controller :'ChartController'
+            ### The chart Controller is located in page-controller.js ###
         }
         
         $routeProvider.when '/deviceDetails', {
@@ -38,34 +44,18 @@ app  = angular.module 'DeviceManager', ['ngAnimate', 'ngRoute','ngResource','ngS
 
 ### setting up the socket mananger and make sure everything is sent to the rootscope this allows us to use socket.io from with in angular###
 
-app.service 'socket', ->
-    if not debugMode
-        socket = io.connect('http://localhost')
-        {
-            on: (eventname, callback) -> 
-                socket.on eventname, ->
-                    args=arguments
-                    $rootscope.$apply ->
-                        callback.apply socket,args
-            emit:  (eventName, data, callback) ->
-                socket.emit eventName, data, ->
-                    args = arguments
-                    $rootScope.$apply ->
-                         if callback
-                                callback.apply socket, args
-        }
-    else 
-        return false
+
             
 app.controller 'DeviceController',
     class DeviceController
-        @$inject : ['$scope', 'socket', '$routeParams' ,'$ionicModal']
-        constructor : (@$scope, @socket, @$routeParams , $ionicModal) ->
+        @$inject : ['$scope', '$routeParams' ,'$ionicModal']
+        constructor : (@$scope,  @$routeParams , $ionicModal) ->
             @prepareApplication @$scope, $ionicModal
-            if not debugMode
-                @setupSocketConnection @$scope,@socket
+            if  debugMode
+                @setupSocketConnection @$scope
             else
                 @setupTestData(@$scope)
+           
         ### Here we prepare the spplicaiton itself setting states before  initialization and ###
         prepareApplication : ($scope, $ionicModal) -> 
             $scope.deviceReady= false
@@ -73,6 +63,7 @@ app.controller 'DeviceController',
             $scope.currentTabs= []
             $scope.devices=[]
             $scope.path=[]
+         
             ### this should come from the server also ###
             $scope.pinModes =[ { name :'input', possibleStates:[{name: 'Pull Up', color:'#FF3300'} , {name: 'Pull Down', color:'#CC6600'} ,{name: 'Float', color:'#FF0000'}] },{ name :'output', possibleStates:[{name: 'High', color:'#0000FF'}, {name: 'High', color:'#0066CC'}] }]  
             $scope.setCurrentDevice = (id)->
@@ -172,10 +163,10 @@ app.controller 'DeviceController',
                     input: currentPin.input
                     output: currentPin.output
                 }
-          
+
         setupTestData : ($scope) -> 
-                $scope.devices= getDeviceInfo()
-                $scope.gpIos = getIoInfo()
+                $scope.devices= window.getDeviceInfo()
+                $scope.gpIos = window.getIoInfo()
 
                 $scope.changePinState = (state)-> 
                     $scope.currentPin.activemode =state.name

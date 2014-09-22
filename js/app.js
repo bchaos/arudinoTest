@@ -5,17 +5,23 @@
 (function() {
   var DeviceController, app, debugMode;
 
-  debugMode = true;
+  debugMode = false;
 
   /* setting up the name of the Contorller*/
 
 
-  app = angular.module('DeviceManager', ['ngAnimate', 'ngRoute', 'ngResource', 'ngSanitize', 'ionic'], function($routeProvider, $locationProvider) {
+  app = angular.module('DeviceManager', ['ngAnimate', 'ngRoute', 'ngResource', 'ngSanitize', 'ionic', 'DeviceManager.directives', 'DeviceManager.services', 'DeviceManager.servicesa', 'DeviceManager.controllers'], function($routeProvider, $locationProvider) {
     $routeProvider.when('/pin', {
       templateUrl: 'views/Pin.html'
     });
     $routeProvider.when('/device', {
       templateUrl: 'views/Device.html'
+    });
+    $routeProvider.when('/deviceChart', {
+      templateUrl: 'views/DeviceChart.html',
+      controller: 'ChartController'
+      /* The chart Controller is located in page-controller.js*/
+
     });
     $routeProvider.when('/deviceDetails', {
       templateUrl: 'views/DeviceDetails.html'
@@ -40,47 +46,15 @@
   /* setting up the socket mananger and make sure everything is sent to the rootscope this allows us to use socket.io from with in angular*/
 
 
-  app.service('socket', function() {
-    var socket;
-    if (!debugMode) {
-      socket = io.connect('http://localhost');
-      return {
-        on: function(eventname, callback) {
-          return socket.on(eventname, function() {
-            var args;
-            args = arguments;
-            return $rootscope.$apply(function() {
-              return callback.apply(socket, args);
-            });
-          });
-        },
-        emit: function(eventName, data, callback) {
-          return socket.emit(eventName, data, function() {
-            var args;
-            args = arguments;
-            return $rootScope.$apply(function() {
-              if (callback) {
-                return callback.apply(socket, args);
-              }
-            });
-          });
-        }
-      };
-    } else {
-      return false;
-    }
-  });
-
   app.controller('DeviceController', DeviceController = (function() {
-    DeviceController.$inject = ['$scope', 'socket', '$routeParams', '$ionicModal'];
+    DeviceController.$inject = ['$scope', '$routeParams', '$ionicModal'];
 
-    function DeviceController($scope, socket, $routeParams, $ionicModal) {
+    function DeviceController($scope, $routeParams, $ionicModal) {
       this.$scope = $scope;
-      this.socket = socket;
       this.$routeParams = $routeParams;
       this.prepareApplication(this.$scope, $ionicModal);
-      if (!debugMode) {
-        this.setupSocketConnection(this.$scope, this.socket);
+      if (debugMode) {
+        this.setupSocketConnection(this.$scope);
       } else {
         this.setupTestData(this.$scope);
       }
@@ -293,8 +267,8 @@
     };
 
     DeviceController.prototype.setupTestData = function($scope) {
-      $scope.devices = getDeviceInfo();
-      $scope.gpIos = getIoInfo();
+      $scope.devices = window.getDeviceInfo();
+      $scope.gpIos = window.getIoInfo();
       $scope.changePinState = function(state) {
         $scope.currentPin.activemode = state.name;
         return $scope.currentPin.currentColor = state.color;

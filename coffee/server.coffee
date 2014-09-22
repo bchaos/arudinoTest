@@ -17,17 +17,27 @@ app.get '/', (req, res)->
             console.log 'success'
             res.writeHead 200
             res.end data
-
+            
+rollDice = -> 
+    return Math.floor( Math.random() * ( 0 + 200 - 1 ) ) + 1;
+            
+generateChartData = ->
+     barChartData = [
+        {label: 'total1', value: rollDice()},
+        {label: 'total2', value: rollDice()},
+        {label: 'total3', value: rollDice()},
+        {label: 'total4', value: rollDice()},
+        {label: 'total5', value: rollDice()}
+      ]
 io.on 'connection', (socket) ->
     ### this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database###
-    fs.readFile __dirname + '../js/deviceInfo.js' , (err,data)->
-        if err 
-            console.log 'error getting device info'
-            socket.emit 'error', {errorCode : '500' , errorMessage:'Failed to open Device info'}
-        else 
-            console.log 'sent device info'
-            ### one  option is that since we have the device info we could make a looping request to the ddevice to get its current status ###
-            socket.emit 'init', data
-        
-        socket.on 'updateComponent', (data)->
-            ### here is where you pu in all the magic to update the network device###
+    socket.emit 'init', generateChartData()
+    console.log 'connected'
+    int= setInterval ->
+            socket.emit 'update', generateChartData()
+            console.log 'update Sent'
+        ,10000;
+    socket.on 'updateComponent', (data)->
+    socket.on 'disconnect', ->
+        clearInterval int
+        ### here is where you pu in all the magic to update the network device###
