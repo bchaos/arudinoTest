@@ -66,7 +66,7 @@
     int = setInterval(function() {
       socket.emit('update', generateChartData());
       return console.log('update Sent');
-    }, 10000);
+    }, 1000);
     socket.on('updateComponent', function(data) {});
     return socket.on('disconnect', function() {
       return clearInterval(int);

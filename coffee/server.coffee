@@ -36,7 +36,7 @@ io.on 'connection', (socket) ->
     int= setInterval ->
             socket.emit 'update', generateChartData()
             console.log 'update Sent'
-        ,10000;
+        ,1000;
     socket.on 'updateComponent', (data)->
     socket.on 'disconnect', ->
         clearInterval int
