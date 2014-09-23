@@ -20,6 +20,7 @@ angular.module('DeviceManager.controllers', []).
     $scope.createCharts = function () {
               
      $scope.lineChartData ={};
+           $scope.chart= {}
      var dataDescription = {
         timeseries: {
           yAxisLabels: [''],
@@ -55,18 +56,25 @@ angular.module('DeviceManager.controllers', []).
       };
         
    
-            
+    $scope.$on('chartCreated', function(e, chart){    
+        $scope.chart=   chart;
+    });
     var socket = io.connect('http://localhost:8000');         
      socket.on('init', function(data) {
- var tempBarChart = angular.copy($scope.chartTemplate.bar);
-           $scope.barChartData = chartService.convertBarChart(data, tempBarChart, dataDescription.bar, '');
-         $scope.$apply();
+        var tempLineChart = angular.copy($scope.chartTemplate.line);
+        $scope.lineChartData = chartService.convertLineChart(data, tempLineChart, dataDescription.timeseries, '');
+        $scope.$apply();
       });
 
       socket.on('update', function(data) {
-           var tempBarChart = angular.copy($scope.chartTemplate.bar);
-            $scope.barChartData = chartService.convertBarChart(data, tempBarChart, dataDescription.bar, '');
-          $scope.$apply();
+          
+        for (var i = 0, _len = data.length; i < _len; i++) {
+            var newData = data[i];
+          // $scope.lineChartData.series[i].data.push(newData); 
+             $scope.chart.series[i].addPoint(newData,true, true);
+           
+        }
+        $scope.$apply();
       });
 
         

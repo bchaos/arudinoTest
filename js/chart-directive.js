@@ -11,11 +11,13 @@ angular.module('DeviceManager.directives', []).
       template: '<div></div>',
       replace: true,
       controller: function ($scope, $element) {
-
+       
+  
 
       },
-      link: function (scope, element, attrs) {
-
+      link: function (scope, element, attrs, rootscope) {
+       
+       
         scope.$watch('chartdata', function (chartdata, oldchartdata) {
 
           if (chartdata) {
@@ -68,6 +70,7 @@ angular.module('DeviceManager.directives', []).
             if (attrs.type === 'line') {
               chartsDefaults.chart.marginTop = 30;
               chartsDefaults.chart.spacingTop = 50;
+                
 //            chartsDefaults.chart.zoomType = null;
             }
 
@@ -117,9 +120,9 @@ angular.module('DeviceManager.directives', []).
               }
 //            chartdata.tooltip.shared = true;
             }
-
-
-            renderChart(chartsDefaults, chartdata);
+               var currentChart=   renderChart(chartsDefaults, chartdata);
+                scope.$root.$broadcast('chartCreated', currentChart);
+         
           }
 
         });
@@ -132,5 +135,5 @@ angular.module('DeviceManager.directives', []).
 
 function renderChart(chartsDefaults, chartdata, attrs) {
   angular.extend(chartsDefaults, chartdata);
-  new Highcharts.Chart(chartsDefaults);
+  return new Highcharts.Chart(chartsDefaults);
 }

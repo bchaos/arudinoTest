@@ -3,6 +3,7 @@ server = require('http').createServer(app)
 io = require('socket.io')(server)
 fs= require('fs')
 __dirname=''
+ 
 server.listen 8000, -> 
     console.log 'listening'
 
@@ -20,23 +21,88 @@ app.get '/', (req, res)->
             
 rollDice = -> 
     return Math.floor( Math.random() * ( 0 + 200 - 1 ) ) + 1;
-            
+      
 generateChartData = ->
-     barChartData = [
-        {label: 'total1', value: rollDice()},
-        {label: 'total2', value: rollDice()},
-        {label: 'total3', value: rollDice()},
-        {label: 'total4', value: rollDice()},
-        {label: 'total5', value: rollDice()}
+ 
+     lineChartData = [
+        {
+          label: 'test1',
+          datapoints: [
+            {
+              timestamp: 1383230753238,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230784165,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230821680,
+              count: rollDice()
+            }
+          ]
+        },
+        {
+          label: 'test2',
+          datapoints: [
+            {
+              timestamp: 1383230753238,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230784165,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230821680,
+              count: rollDice()
+            }
+          ]
+        },
+        {
+          label: 'test3',
+          datapoints: [
+            {
+              timestamp: 1383230753238,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230784165,
+              count: rollDice()
+            },
+            {
+              timestamp: 1383230821680,
+              count: rollDice()
+            }
+          ]
+        }
       ]
+getUpdateData =(timestamp)->
+    [
+        [
+            timestamp
+            rollDice()
+        ],
+        [
+            timestamp
+            rollDice()
+        ],
+        [
+            timestamp
+            rollDice()
+        ]
+    ]
+    
 io.on 'connection', (socket) ->
+    timestamp= 1383230821680
     ### this is just for testing it needs to be compiled with actual state of each pin  this could be done via a local database###
     socket.emit 'init', generateChartData()
     console.log 'connected'
     int= setInterval ->
-            socket.emit 'update', generateChartData()
+            timestamp +=  10000
+            socket.emit 'update', getUpdateData(timestamp)
             console.log 'update Sent'
-        ,1000;
+        ,10000;
     socket.on 'updateComponent', (data)->
     socket.on 'disconnect', ->
         clearInterval int
