@@ -96,10 +96,10 @@
     socket.emit('init', generateChartData());
     console.log('connected');
     int = setInterval(function() {
-      timestamp += 10000;
+      timestamp += 2000;
       socket.emit('update', getUpdateData(timestamp));
       return console.log('update Sent');
-    }, 10000);
+    }, 2000);
     socket.on('updateComponent', function(data) {});
     return socket.on('disconnect', function() {
       return clearInterval(int);

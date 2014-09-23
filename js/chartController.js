@@ -71,7 +71,7 @@ angular.module('DeviceManager.controllers', []).
         for (var i = 0, _len = data.length; i < _len; i++) {
             var newData = data[i];
           // $scope.lineChartData.series[i].data.push(newData); 
-             $scope.chart.series[i].addPoint(newData,true, true);
+             $scope.chart.series[i].addPoint(newData,true, false);
            
         }
         $scope.$apply();

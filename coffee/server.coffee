@@ -99,10 +99,10 @@ io.on 'connection', (socket) ->
     socket.emit 'init', generateChartData()
     console.log 'connected'
     int= setInterval ->
-            timestamp +=  10000
+            timestamp +=  2000
             socket.emit 'update', getUpdateData(timestamp)
             console.log 'update Sent'
-        ,10000;
+        ,2000;
     socket.on 'updateComponent', (data)->
     socket.on 'disconnect', ->
         clearInterval int
